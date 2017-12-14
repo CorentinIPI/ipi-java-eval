@@ -1,7 +1,13 @@
 package com.ipiecoles.java.javaeval;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import com.ipiecoles.java.javaeval.model.Entreprise;
+import com.ipiecoles.java.javaeval.repository.EmployeRepository;
+import com.ipiecoles.java.javaeval.repository.EntrepriseRepository;
+import com.ipiecoles.java.javaeval.service.EntrepriseService;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,17 +15,27 @@ import java.sql.Statement;
 
 @Component
 public class MyRunner implements CommandLineRunner {
+	
+    @Autowired
+	private EmployeRepository employeRepository;
+    @Autowired
+	private EntrepriseRepository entrepriseRepository;
+
 
     @Override
     public void run(String... strings) throws Exception {
         Connection connexion = initConnection();
         Statement statement = connexion.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM Employe LIMIT 10");
-        while ( resultSet.next() ) {
-            print(resultSet.getString("nom"));
-            print(resultSet.getDate("dateEmbauche"));
-        }
-
+        
+        EntrepriseService ets = new EntrepriseService();
+        ets.setRepositoryEmp(employeRepository);
+        ets.setRepositoryEnt(entrepriseRepository);
+        
+        
+        Entreprise CGI = new Entreprise();
+        CGI.setNom("CGI");
+        ets.creerEntreprise(CGI);
+        System.out.println("Entreprise cree!!");
         /*Technicien t = technicienRepository.findOne(4L);
         print(t);
 
